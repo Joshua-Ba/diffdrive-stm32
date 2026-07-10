@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(diffdrive VERSION 0.1.0 LANGUAGES C CXX)
 
+enable_testing()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -19,6 +21,7 @@ if(NOT CMAKE_CROSSCOMPILING)
 
     add_executable(test_kinematics tests/test_kinematics.cpp)
     target_link_libraries(test_kinematics PRIVATE unity core)
+    add_test(NAME kinematics COMMAND test_kinematics)
 else()
     add_executable(diffdrive.elf src/app/startup.c src/app/main.c)
     target_link_libraries(diffdrive.elf PRIVATE core)
