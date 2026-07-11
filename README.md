@@ -48,5 +48,5 @@ cmake --build build-fw
 
 ## Status
 
-Implemented: kinematics, bare-metal startup, and CI.
-Planned: odometry, PID control, and hardware drivers.
+Implemented: kinematics, odometry, PID control, bare-metal startup, and CI.
+Planned: hardware drivers.
