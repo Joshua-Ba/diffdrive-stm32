@@ -36,7 +36,7 @@ void test_mixed(void) {
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_only_gyro);
-    RUN_TEST(test_only_odom_mult_steps);
+    RUN_TEST(test_only_gyro_mult_steps);
     RUN_TEST(test_only_odom);
     RUN_TEST(test_mixed);
 
