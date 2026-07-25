@@ -35,7 +35,24 @@ if(NOT CMAKE_CROSSCOMPILING)
     target_link_libraries(test_complementary_filter PRIVATE unity core)
     add_test(NAME complementary_filter COMMAND test_complementary_filter)
 else()
-    add_executable(diffdrive.elf src/app/startup.c src/app/main.c)
+    add_executable(diffdrive.elf
+        src/app/startup.c
+        src/app/main.c
+        src/drivers/gpio_stm32.c
+        src/drivers/pwm_stm32.c
+    )
+    target_include_directories(diffdrive.elf PRIVATE src/hal)
     target_link_libraries(diffdrive.elf PRIVATE core)
     target_link_options(diffdrive.elf PRIVATE -T${CMAKE_SOURCE_DIR}/src/app/linker/stm32f401.ld -nostartfiles -nostdlib)
+
+    add_custom_command(TARGET diffdrive.elf POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:diffdrive.elf> ${CMAKE_BINARY_DIR}/diffdrive.bin
+        COMMENT "Erzeuge diffdrive.bin"
+    )
+
+    add_custom_target(flash
+        COMMAND st-flash --reset write ${CMAKE_BINARY_DIR}/diffdrive.bin 0x08000000
+        DEPENDS diffdrive.elf
+        COMMENT "Flashe auf STM32F401"
+    )
 endif()
