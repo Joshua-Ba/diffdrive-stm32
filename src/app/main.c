@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "gpio.h"
-#include "pwm.h"
+#include "motor.h"
 
 int main(void)
 {
@@ -12,8 +12,8 @@ int main(void)
     gpio_setup_mode(led, GENERAL_OUT);
 
     tim2_pwm_init();
-    pwm_set_duty(0.25f, MOTOR_LEFT);
-    pwm_set_duty(0.75f, MOTOR_RIGHT);
+    motor_set(MOTOR_LEFT, 0.8f);
+    motor_set(MOTOR_RIGHT, 0.8f);
 
     while (1) {
         gpio_toggle(led);

@@ -40,6 +40,7 @@ else()
         src/app/main.c
         src/drivers/gpio_stm32.c
         src/drivers/pwm_stm32.c
+        src/drivers/motor_drv8833.c
     )
     target_include_directories(diffdrive.elf PRIVATE src/hal)
     target_link_libraries(diffdrive.elf PRIVATE core)

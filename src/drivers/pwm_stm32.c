@@ -10,9 +10,11 @@
 #define TIM2_CR1 0x00u
 
 #define TIM2_CCMR1 0x18u
+#define TIM2_CCR1 0x34u
 #define TIM2_CCR2 0x38u
 
 #define TIM2_CCMR2 0x1Cu
+#define TIM2_CCR3 0x3Cu
 #define TIM2_CCR4 0x40u
 
 
@@ -22,10 +24,10 @@ typedef struct {
     uint32_t ccmr_preload;
     uint32_t ccer_bit;
     gpio_pin_t pin;
-}pwm_channel_t;
+}pwm_channel_init_t;
 
 
-static void setup_channel(pwm_channel_t channel){
+static void setup_channel(pwm_channel_init_t channel){
     TIM2_REG(channel.ccmr_offset) &= ~(0b111 << channel.ccmr_position);
     TIM2_REG(channel.ccmr_offset) |= (0b110 << channel.ccmr_position);
     TIM2_REG(channel.ccmr_offset) |= (1 << channel.ccmr_preload);
@@ -40,11 +42,26 @@ void tim2_pwm_init(){
     TIM2_REG(TIM2_PSC) = 0;
     TIM2_REG(TIM2_ARR) = 799;
 
+    gpio_pin_t pa0 = {
+        .port = 0x40020000u,
+        .pin = 0
+    };
+    pwm_channel_init_t pwm_pa0 = {
+        .ccmr_offset = TIM2_CCMR1,
+        .ccmr_position = 4,
+        .ccmr_preload = 3,
+        .ccer_bit = 0,
+        .pin = pa0
+    };
+    setup_channel(pwm_pa0);
+    TIM2_REG(TIM2_CCR1) = 0;
+
+
     gpio_pin_t pa1 = {
         .port = 0x40020000u,
         .pin = 1
     };
-    pwm_channel_t pwm_pa1 = {
+    pwm_channel_init_t pwm_pa1 = {
         .ccmr_offset = TIM2_CCMR1,
         .ccmr_position = 12,
         .ccmr_preload = 11,
@@ -52,12 +69,27 @@ void tim2_pwm_init(){
         .pin = pa1
     };
     setup_channel(pwm_pa1);
+    TIM2_REG(TIM2_CCR2) = 0;
+
+    gpio_pin_t pa2 = {
+        .port = 0x40020000u,
+        .pin = 2
+    };
+    pwm_channel_init_t pwm_pa2 = {
+        .ccmr_offset = TIM2_CCMR2,
+        .ccmr_position = 4,
+        .ccmr_preload = 3,
+        .ccer_bit = 8,
+        .pin = pa2
+    };
+    setup_channel(pwm_pa2);
+    TIM2_REG(TIM2_CCR3) = 0;
 
     gpio_pin_t pa3 = {
         .port = 0x40020000u,
         .pin = 3
     };
-    pwm_channel_t pwm_pa3 = {
+    pwm_channel_init_t pwm_pa3 = {
         .ccmr_offset = TIM2_CCMR2,
         .ccmr_position = 12,
         .ccmr_preload = 11,
@@ -65,18 +97,16 @@ void tim2_pwm_init(){
         .pin = pa3
     };
     setup_channel(pwm_pa3);
-
-    pwm_set_duty(0.0f, MOTOR_LEFT);
-    pwm_set_duty(0.0f, MOTOR_RIGHT);
+    TIM2_REG(TIM2_CCR4) = 0;
 
     TIM2_REG(TIM2_CR1) |= (1 << 0);
 }
 
 
-void pwm_set_duty(float duty,  motor_channel_t motor){
+void pwm_set_duty(float duty, pwm_channel_t channel){
     float min_clamped_duty = duty < 0.0f ? 0.0f : duty;
     float clamped_duty = min_clamped_duty > 1.0f ? 1.0f : min_clamped_duty;
     uint32_t max_value = TIM2_REG(TIM2_ARR) + 1;
-    uint32_t ccr_offset = (motor == MOTOR_LEFT) ? TIM2_CCR2 : TIM2_CCR4;
+    uint32_t ccr_offset = TIM2_CCR1 + 4 * channel;
     TIM2_REG(ccr_offset) = max_value * clamped_duty;
 }

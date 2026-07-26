@@ -5,11 +5,12 @@ extern "C" {
 #include <stdint.h>
 #include "gpio.h"
 
-typedef enum { MOTOR_LEFT, MOTOR_RIGHT } motor_channel_t;
+typedef enum { CHANNEL_1, CHANNEL_2, CHANNEL_3, CHANNEL_4 } pwm_channel_t;
+
 
 void tim2_pwm_init();
 
-void pwm_set_duty(float duty, motor_channel_t motor);
+void pwm_set_duty(float duty, pwm_channel_t channel);
 
 #ifdef __cplusplus
 }
