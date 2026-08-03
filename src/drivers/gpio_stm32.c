@@ -6,6 +6,8 @@
 #define ODR_Offset ((uintptr_t)0x14u)
 #define RCC_AHB1ENR (*(volatile uint32_t *)(0x40023800u + 0x30u))
 #define GPIO_REG(base, offset) (*(volatile uint32_t*)((base) + (offset)))
+#define GPIO_PUPDR 0x0Cu
+
 
 void gpio_set(gpio_pin_t pin, uint8_t value){
     if(value){
@@ -35,4 +37,9 @@ void gpio_set_alternate_function(gpio_pin_t pin, uint8_t af){
 
     GPIO_REG(pin.port, offset) &= ~(0b1111 << position);
     GPIO_REG(pin.port, offset) |= (af << position);
+}
+
+void gpio_set_pull(gpio_pin_t pin, gpio_pull_t pull){
+    GPIO_REG(pin.port, GPIO_PUPDR) &= ~(0b11 << (2 * pin.pin));
+    GPIO_REG(pin.port, GPIO_PUPDR) |= (pull << (2 * pin.pin));
 }

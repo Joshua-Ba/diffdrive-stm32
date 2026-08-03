@@ -17,6 +17,14 @@ typedef struct {
     uint32_t pin;
 }gpio_pin_t;
 
+typedef enum {
+    NO_PULL,
+    PULL_UP,
+    PULL_DOWN
+} gpio_pull_t;
+
+void gpio_set_pull(gpio_pin_t pin, gpio_pull_t pull);
+
 void gpio_set(gpio_pin_t pin, uint8_t value);
 
 void gpio_setup_mode(gpio_pin_t pin, PortMode mode);

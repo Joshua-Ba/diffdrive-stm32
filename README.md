@@ -48,5 +48,11 @@ cmake --build build-fw
 
 ## Status
 
-Implemented: kinematics, odometry, PID control, bare-metal startup, and CI.
-Planned: hardware drivers.
+Implemented:
+- Control logic (kinematics, odometry, PID with anti-windup, complementary filter), host-tested
+- Bare-metal startup (vector table, FPU enable, fault handlers) and linker script
+- GPIO, PWM (TIM2, 4 channels), and a bidirectional DRV8833 motor driver, running on hardware
+- Quadrature encoder input (TIM3/TIM4 in encoder mode), running on hardware
+- CI running all unit tests on every push
+
+Planned: IMU (I2C), UART telemetry, and closing the control loop.

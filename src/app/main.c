@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "gpio.h"
 #include "motor.h"
+#include "encoder.h"
 
 int main(void)
 {
@@ -11,7 +12,9 @@ int main(void)
     };   // Port C, Pin 13 (LED Blau)
     gpio_setup_mode(led, GENERAL_OUT);
 
+
     tim2_pwm_init();
+    timx_encoder_init();
     motor_set(MOTOR_LEFT, 0.8f);
     motor_set(MOTOR_RIGHT, 0.8f);
 
